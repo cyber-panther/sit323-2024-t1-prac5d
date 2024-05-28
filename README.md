@@ -12,8 +12,6 @@
    gcloud services enable containerregistry.googleapis.com
    ```
 
-   *Suggestion for Screenshot:* Google Cloud Console showing the Container Registry API being enabled.
-
 ### 2. Authenticate with the Registry
 
 1. **Configure Docker to use Google Cloud credentials:**
@@ -21,8 +19,6 @@
    ```sh
    gcloud auth configure-docker
    ```
-
-   *Suggestion for Screenshot:* Terminal output showing successful configuration of Docker.
 
 ### 3. Build and Tag Your Docker Image
 
@@ -32,15 +28,11 @@
    docker build -t sit323-5d-app:v1 .
    ```
 
-   *Suggestion for Screenshot:* Terminal showing the build process of the Docker image.
-
 2. **Tag the Docker image for your registry:**
 
    ```sh
    docker tag sit323-5d-app:v1 gcr.io/my-project-id/sit323-5d-app:v1
    ```
-
-   *Suggestion for Screenshot:* Terminal output showing the image tagging command.
 
 ### 4. Publish the Docker Image
 
@@ -50,8 +42,6 @@
    docker push gcr.io/my-project-id/sit323-5d-app:v1
    ```
 
-   *Suggestion for Screenshot:* Terminal showing the push process of the Docker image.
-
 ### 5. Verify the Published Image
 
 1. **Run the image locally to verify:**
@@ -59,8 +49,6 @@
    ```sh
    docker run -d -p 3000:3000 gcr.io/my-project-id/sit323-5d-app:v1
    ```
-
-   *Suggestion for Screenshot:* Terminal showing the running container and the application accessible in the browser at `http://localhost:3000`.
 
 ### Screenshot Suggestions
 
