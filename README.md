@@ -1,169 +1,105 @@
-# Step-by-Step Documentation
 
-#### Step 1: Installed Docker
-- Downloaded Docker from the official [Docker website](https://www.docker.com/get-started) and installed it on the local machine.
+---
 
-#### Step 2: Cloned the Sample Web Application
-- Used Git to clone the sample web application repository from GitHub.
-  ```sh
-  git clone https://github.com/agrimgautam/sit323-2024-t1-prac5p.git
-  cd sit323-2024-t1-prac5p
-  ```
+# Deployment to Google Cloud Container Registry
+## SIT323 Task 5.3D
 
-#### Step 3: Created a Dockerfile
-- Created a `Dockerfile` in the root directory of the project. The Dockerfile included instructions to use the Node.js base image, set the working directory, copy necessary files, install dependencies, expose the application port, and define the command to run the application.
-  ```dockerfile
-    # Use the official Node.js image as the base image
-    FROM node:18.20.2
+### 1. Create a Private Container Registry
 
-    # Set the working directory in the container
-    WORKDIR /
+1. **Enable Container Registry API:**
 
-    # Copy package.json and package-lock.json to the working directory
-    COPY package*.json ./
+   ```sh
+   gcloud services enable containerregistry.googleapis.com
+   ```
 
-    # Install dependencies
-    RUN npm install
-
-    # Copy the rest of the application code to the working directory
-    COPY . .
-
-    # Expose port 3000
-    EXPOSE 3000
-
-    # Command to run the application
-    CMD ["node", "index.js"]
-  ```
-
-#### Step 4: Built the Docker Image
-- Used the `docker build` command to build the Docker image from the Dockerfile.
-  ```sh
-  docker build -t agrimgautam/sit323-2024-t1-prac5p .
-  ```
-
-#### Step 5: Created a Docker Compose File
-- Created a `docker-compose.yml` file in the project directory to define the services for the application.
-  ```yaml
-    version: '3'
-    services:
-    web:
-        build: .
-        ports:
-          - "3000:3000"
-  ```
-
-#### Step 6: Started the Docker Compose Environment
-- Started the application using Docker Compose with the `docker-compose up` command.
-  ```sh
-  docker-compose up
-  ```
-
-#### Step 7: Tested the Application
-- Opened a web browser and navigated to `http://localhost:3000` to verify that the application was running correctly.
-
-#### Step 8: Pushed the Docker Image to a Registry
-- Logged into Docker Hub, tagged the Docker image, and pushed it to the Docker repository.
-  ```sh
-  docker login
-  docker tag agrimgautam/sit323-2024-t1-prac5p agrimgautam/sit323-2024-t1-prac5p:latest
-  docker push agrimgautam/sit323-2024-t1-prac5p:latest
-  ```
-
-To publish your microservice to a private container registry on Google Cloud, follow these steps:
-
-### 1. Create a Private Container Registry on Google Cloud
-
-1. **Set up Google Cloud SDK:**
-   - If you don't already have the Google Cloud SDK installed, download and install it from [here](https://cloud.google.com/sdk/docs/install).
-
-2. **Initialize the Google Cloud SDK:**
-   - Open a terminal and run:
-
-     ```sh
-     gcloud init
-     ```
-
-3. **Create a Google Container Registry (GCR) bucket:**
-   - GCR uses Google Cloud Storage buckets to store images. The GCR registry name is based on the region. For example:
-     - `gcr.io` (multi-region)
-     - `us.gcr.io` (us region)
-     - `eu.gcr.io` (eu region)
-     - `asia.gcr.io` (asia region)
-
-   - Create a bucket using the following command (assuming `gcr.io` for a multi-region setup):
-
-     ```sh
-     gcloud services enable containerregistry.googleapis.com
-     ```
+   *Suggestion for Screenshot:* Google Cloud Console showing the Container Registry API being enabled.
 
 ### 2. Authenticate with the Registry
 
-1. **Authenticate Docker with your Google Cloud account:**
+1. **Configure Docker to use Google Cloud credentials:**
 
    ```sh
    gcloud auth configure-docker
    ```
 
-   This command updates your Docker configuration to use the Google Cloud credentials for authentication.
+   *Suggestion for Screenshot:* Terminal output showing successful configuration of Docker.
 
 ### 3. Build and Tag Your Docker Image
 
-1. **Build your Docker image:**
-   - Make sure you are in the directory containing your `Dockerfile`.
+1. **Build the Docker image:**
 
    ```sh
    docker build -t sit323-5d-app:v1 .
    ```
 
+   *Suggestion for Screenshot:* Terminal showing the build process of the Docker image.
+
 2. **Tag the Docker image for your registry:**
-   - Replace `meta-chassis-424710-r6` with your Google Cloud project ID. The project ID can be found in the Google Cloud Console.
 
    ```sh
-   docker tag sit323-5d-app:v1 gcr.io/meta-chassis-424710-r6/sit323-5d-app:v1
+   docker tag sit323-5d-app:v1 gcr.io/my-project-id/sit323-5d-app:v1
    ```
+
+   *Suggestion for Screenshot:* Terminal output showing the image tagging command.
 
 ### 4. Publish the Docker Image
 
-1. **Push the Docker image to your Google Container Registry:**
+1. **Push the Docker image to your registry:**
 
    ```sh
-   docker push gcr.io/meta-chassis-424710-r6/sit323-5d-app:v1
+   docker push gcr.io/my-project-id/sit323-5d-app:v1
    ```
 
-   This command uploads your Docker image to the specified Google Container Registry.
+   *Suggestion for Screenshot:* Terminal showing the push process of the Docker image.
 
 ### 5. Verify the Published Image
 
-1. **Run the Docker image from your Google Container Registry:**
+1. **Run the image locally to verify:**
 
    ```sh
-   docker run -d -p 8080:8080 gcr.io/meta-chassis-424710-r6/sit323-5d-app:v1
+   docker run -d -p 3000:3000 gcr.io/my-project-id/sit323-5d-app:v1
    ```
 
-2. **Check that your microservice is running:**
-   - Open a web browser and navigate to `http://localhost:8080`.
-   - You should see your application running and accessible via the specified port.
+   *Suggestion for Screenshot:* Terminal showing the running container and the application accessible in the browser at `http://localhost:3000`.
 
-### Summary
+### Screenshot Suggestions
 
-Here is a summarized list of commands to follow:
+1. **Enabling Container Registry API:**
+   - Google Cloud Console page showing the API being enabled.
+   
+2. **Configuring Docker Authentication:**
+   - Terminal output confirming Docker configuration with Google Cloud credentials.
 
-```sh
-# Step 1: Enable GCR (only needed once)
-gcloud services enable containerregistry.googleapis.com
+3. **Building the Docker Image:**
+   - Terminal showing the Docker build process with no errors.
 
-# Step 2: Authenticate Docker with GCR
-gcloud auth configure-docker
+4. **Tagging the Docker Image:**
+   - Terminal output showing the command and result of tagging the Docker image.
 
-# Step 3: Build and tag the Docker image
-docker build -t sit323-5d-app:v1 .
-docker tag sit323-5d-app:v1 gcr.io/meta-chassis-424710-r6/sit323-5d-app:v1
+5. **Pushing the Docker Image:**
+   - Terminal output showing the image being pushed to Google Container Registry.
 
-# Step 4: Push the Docker image to GCR
-docker push gcr.io/meta-chassis-424710-r6/sit323-5d-app:v1
+6. **Running the Docker Container:**
+   - Terminal showing the running container.
+   - Browser screenshot accessing the application at `http://localhost:8080`.
 
-# Step 5: Run the image to verify it
-docker run -d -p 8080:8080 gcr.io/meta-chassis-424710-r6/sit323-5d-app:v1
-```
+By following this guide and including the suggested screenshots, you'll have a comprehensive README file to assist others in publishing their microservice to Google Cloud.
 
-By following these steps, you'll have your microservice published to a private container registry on Google Cloud and verified that it can run from the published image.
+Here's an enhanced README file with detailed explanations of each step and the reasons behind them:
+
+### Explanation of Each Step
+
+1. **Enable Container Registry API:**
+   - This step activates the Container Registry service in your Google Cloud project, allowing you to store and manage Docker images.
+
+2. **Authenticate with the Registry:**
+   - Configuring Docker to use Google Cloud credentials ensures secure communication between your local Docker client and GCR.
+
+3. **Build and Tag Your Docker Image:**
+   - Building the image packages your application into a container. Tagging it with the registry URL prepares it for upload.
+
+4. **Publish the Docker Image:**
+   - Pushing the image uploads it to GCR, making it available for deployments and other uses.
+
+5. **Verify the Published Image:**
+   - Running the image locally ensures it functions correctly, confirming a successful upload to GCR.
